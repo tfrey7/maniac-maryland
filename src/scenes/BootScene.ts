@@ -1,4 +1,9 @@
 import Phaser from "phaser";
+import mcnultyUrl from "../../assets/characters/mcnulty.png";
+import bunkUrl from "../../assets/characters/bunk.png";
+import handymanUrl from "../../assets/characters/handyman.png";
+import atariPngUrl from "../../assets/fonts/atari-classic.png";
+import atariXmlUrl from "../../assets/fonts/atari-classic.xml?url";
 
 export class BootScene extends Phaser.Scene {
   constructor() {
@@ -6,6 +11,10 @@ export class BootScene extends Phaser.Scene {
   }
 
   preload(): void {
+    this.load.image("mcnulty_sprite", mcnultyUrl);
+    this.load.image("bunk_sprite", bunkUrl);
+    this.load.image("handyman_sprite", handymanUrl);
+    this.load.bitmapFont("pixel", atariPngUrl, atariXmlUrl);
     const g = this.add.graphics();
     g.fillStyle(0x2a2622, 1);
     g.fillRect(0, 0, 1280, 720);

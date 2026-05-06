@@ -38,19 +38,22 @@ export class KitchenScene extends Phaser.Scene {
     this.mcnulty = new Character(this, sceneData.spawn.mcnulty.x, sceneData.spawn.mcnulty.y, {
       id: "mcnulty",
       label: "McNulty",
-      color: 0x4a78c4,
+      texture: "mcnulty_sprite",
+      scale: 0.9,
       speed: 220,
     });
     this.bunk = new Character(this, sceneData.spawn.bunk.x, sceneData.spawn.bunk.y, {
       id: "bunk",
       label: "Bunk",
-      color: 0xc46a4a,
+      texture: "bunk_sprite",
+      scale: 0.9,
       speed: 200,
     });
     this.handyman = new Character(this, sceneData.spawn.handyman.x, sceneData.spawn.handyman.y, {
       id: "handyman",
       label: "Handyman",
-      color: 0x6e6e6e,
+      texture: "handyman_sprite",
+      scale: 0.9,
       speed: 0,
     });
 
