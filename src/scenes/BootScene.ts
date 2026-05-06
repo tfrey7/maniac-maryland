@@ -7,7 +7,7 @@ import handymanIdleUrl from "../../assets/characters/handyman-idle-sheet.png";
 import kitchenBgUrl from "../../assets/backgrounds/kitchen.png";
 import atariPngUrl from "../../assets/fonts/atari-classic.png";
 import atariXmlUrl from "../../assets/fonts/atari-classic.xml?url";
-import themeUrl from "../../assets/audio/Midnight_at_the_Precinct.mp3";
+import themeUrl from "../../assets/audio/background_music.mp3";
 import speechManifest from "../../assets/audio/speech/manifest.json";
 
 const speechUrls = import.meta.glob("../../assets/audio/speech/*.ogg", {
