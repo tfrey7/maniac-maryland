@@ -18,3 +18,7 @@ yarn-error.log*
 
 # High-res originals from gen-image.sh; only commit downscaled outputs
 *@source.png
+
+# Scratch/intermediate outputs from pixel-artist iterations (PixelLab previews,
+# alternate generations, exploratory sources). Final assets land in assets/.
+/drafts/

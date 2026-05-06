@@ -96,6 +96,11 @@ export class HotspotManager {
     h?.worldSprite?.setVisible(true);
   }
 
+  swapWorldSpriteTexture(id: string, textureKey: string): void {
+    const h = this.hotspots.find((x) => x.id === id);
+    h?.worldSprite?.setTexture(textureKey);
+  }
+
   hide(id: string): void {
     const h = this.hotspots.find((x) => x.id === id);
     if (!h) return;

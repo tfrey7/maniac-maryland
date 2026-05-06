@@ -51,6 +51,7 @@ export class Character {
         .setOrigin(0.5, 1)
         .setStrokeStyle(2, 0x000000);
     }
+    this.sprite.setDepth(this.sprite.y);
   }
 
   get x(): number {
@@ -128,6 +129,20 @@ export class Character {
     return this.target !== null;
   }
 
+  playAction(animKey: string, onComplete: () => void): void {
+    if (!(this.sprite instanceof Phaser.GameObjects.Sprite)) {
+      onComplete();
+      return;
+    }
+    this.cancelIdle();
+    const sprite = this.sprite;
+    sprite.play({ key: animKey, repeat: 0 });
+    sprite.once("animationcomplete-" + animKey, () => {
+      if (this.idleAnimKey) this.enterIdle();
+      onComplete();
+    });
+  }
+
   update(_time: number, deltaMs: number): void {
     if (!this.target) return;
     const dx = this.target.x - this.sprite.x;
@@ -139,6 +154,7 @@ export class Character {
     }
     if (dist <= step) {
       this.sprite.setPosition(this.target.x, this.target.y);
+      this.sprite.setDepth(this.sprite.y);
       const cb = this.onArrive;
       this.target = null;
       this.onArrive = null;
@@ -149,6 +165,7 @@ export class Character {
         this.sprite.x + (dx / dist) * step,
         this.sprite.y + (dy / dist) * step,
       );
+      this.sprite.setDepth(this.sprite.y);
     }
   }
 }

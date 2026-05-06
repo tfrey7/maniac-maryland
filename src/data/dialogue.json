@@ -1,6 +1,14 @@
 {
   "omar_comin": { "speaker": "omar", "text": "Omar comin'!" },
   "intro": { "speaker": "mcnulty", "text": "Motherfucker." },
+  "fail_fuck": { "speaker": "mcnulty", "text": "Fuck." },
+  "fail_motherfucker": { "speaker": "mcnulty", "text": "Motherfucker." },
+  "fail_fuck_me": { "speaker": "mcnulty", "text": "Fuck me." },
+  "fail_what_the_fuck": { "speaker": "mcnulty", "text": "What the fuck." },
+  "fail_aw_fuck": { "speaker": "mcnulty", "text": "Aw, fuck." },
+  "fail_fuckin_hell": { "speaker": "mcnulty", "text": "Fuckin' hell." },
+  "fail_the_fuck": { "speaker": "mcnulty", "text": "The fuck?" },
+  "fail_jesus_fuck": { "speaker": "mcnulty", "text": "Jesus fuck." },
   "cutscene": [
     { "speaker": "mcnulty", "text": "Fuck." },
     { "speaker": "bunk", "text": "Motherfucker." },

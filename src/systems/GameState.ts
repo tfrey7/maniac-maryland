@@ -1,6 +1,6 @@
-export type Flag = "solved";
+export type Flag = "solved" | "bag_open" | "bag_empty";
 
-export type ItemId = "duffel_bag";
+export type ItemId = "duffel_bag" | "tape_measure";
 
 export class GameState {
   private flags = new Set<Flag>();

@@ -4,7 +4,26 @@
       "hotspot": "counter_dropzone",
       "withItem": "duffel_bag",
       "removeItem": "duffel_bag",
-      "showWorldSprite": true
+      "showWorldSprite": true,
+      "swapWorldSprite": "item:duffel_bag_open_world",
+      "line": "fail_motherfucker",
+      "setFlag": "bag_open",
+      "postWalk": { "dx": 90 }
+    },
+    {
+      "hotspot": "counter_dropzone",
+      "requireFlag": "bag_open",
+      "requireNotFlag": "bag_empty",
+      "playAnim": "mcnulty-tape-measure",
+      "line": "fail_fuck",
+      "setFlag": "bag_empty",
+      "giveItem": "tape_measure",
+      "swapWorldSprite": "item:duffel_bag_open_empty_world"
+    },
+    {
+      "hotspot": "counter_dropzone",
+      "requireFlag": "bag_empty",
+      "line": "fail_fuck"
     }
   ],
   "solveCondition": []

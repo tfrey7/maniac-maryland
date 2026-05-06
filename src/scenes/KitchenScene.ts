@@ -12,6 +12,17 @@ import sceneData from "../data/kitchen.scene.json";
 
 const FOLLOW_OFFSET = 80;
 
+const FAIL_LINES = [
+  "fail_fuck",
+  "fail_motherfucker",
+  "fail_fuck_me",
+  "fail_what_the_fuck",
+  "fail_aw_fuck",
+  "fail_fuckin_hell",
+  "fail_the_fuck",
+  "fail_jesus_fuck",
+];
+
 export class KitchenScene extends Phaser.Scene {
   private state!: GameState;
   private mcnulty!: Character;
@@ -46,7 +57,7 @@ export class KitchenScene extends Phaser.Scene {
       texture: "mcnulty_walk",
       walkAnimKey: "mcnulty-walk",
       idleAnimKey: "mcnulty-idle",
-      scale: 1.68,
+      scale: 2.39,
       speed: 220,
     });
     this.bunk = new Character(this, sceneData.spawn.bunk.x, sceneData.spawn.bunk.y, {
@@ -159,22 +170,40 @@ export class KitchenScene extends Phaser.Scene {
   private runInteraction(hot: Hotspot): void {
     const result = resolve(hot.id, this.state);
     if (!result) {
-      this.clearActiveItem();
+      const lineId = FAIL_LINES[Math.floor(Math.random() * FAIL_LINES.length)];
+      this.dialogue.speakLine(lineId, () => this.clearActiveItem());
       return;
     }
 
-    const applyEffects = (): void => {
+    const applyVisualEffects = (): void => {
+      if (result.showWorldSprite) this.hotspots.showWorldSprite(hot.id);
+      if (result.swapWorldSprite) this.hotspots.swapWorldSpriteTexture(hot.id, result.swapWorldSprite);
+    };
+    const applyStateEffects = (): void => {
       if (result.setFlag) this.state.setFlag(result.setFlag);
       if (result.giveItem) this.giveItem(result.giveItem);
       if (result.removeItem) this.removeItem(result.removeItem);
-      if (result.showWorldSprite) this.hotspots.showWorldSprite(hot.id);
       if (result.removeHotspot) this.hotspots.hide(hot.id);
       this.clearActiveItem();
     };
-    if (result.lineId) {
-      this.dialogue.speakLine(result.lineId, applyEffects);
+    const speakAndApply = (): void => {
+      if (result.lineId) {
+        this.dialogue.speakLine(result.lineId, applyStateEffects);
+      } else {
+        applyStateEffects();
+      }
+    };
+    applyVisualEffects();
+    if (result.postWalk) {
+      const dx = result.postWalk.dx ?? 0;
+      const dy = result.postWalk.dy ?? 0;
+      const dest = clampToPolygon({ x: this.mcnulty.x + dx, y: this.mcnulty.y + dy }, this.walkable);
+      this.mcnulty.walkTo(dest);
+    }
+    if (result.playAnim) {
+      this.mcnulty.playAction(result.playAnim, speakAndApply);
     } else {
-      applyEffects();
+      speakAndApply();
     }
   }
 

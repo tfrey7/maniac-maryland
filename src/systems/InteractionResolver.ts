@@ -4,12 +4,17 @@ import interactionsData from "../data/interactions.json";
 export interface InteractionRule {
   hotspot: string;
   withItem?: ItemId;
+  requireFlag?: Flag;
+  requireNotFlag?: Flag;
   line?: string;
   setFlag?: Flag;
   giveItem?: ItemId;
   removeItem?: ItemId;
   removeHotspot?: boolean;
   showWorldSprite?: boolean;
+  swapWorldSprite?: string;
+  playAnim?: string;
+  postWalk?: { dx?: number; dy?: number };
 }
 
 export interface ResolvedInteraction {
@@ -19,6 +24,9 @@ export interface ResolvedInteraction {
   removeItem?: ItemId;
   removeHotspot?: boolean;
   showWorldSprite?: boolean;
+  swapWorldSprite?: string;
+  playAnim?: string;
+  postWalk?: { dx?: number; dy?: number };
 }
 
 const RULES = interactionsData.interactions as InteractionRule[];
@@ -34,13 +42,18 @@ export function resolve(
 
   if (item) {
     const match = RULES.find(
-      (r) => r.hotspot === hotspotId && r.withItem === item,
+      (r) =>
+        r.hotspot === hotspotId &&
+        r.withItem === item &&
+        flagsMatch(r, state),
     );
     if (match) return toResolved(match);
     return FALLBACK_USE_WITH_ITEM ? { lineId: FALLBACK_USE_WITH_ITEM } : null;
   }
 
-  const match = RULES.find((r) => r.hotspot === hotspotId && !r.withItem);
+  const match = RULES.find(
+    (r) => r.hotspot === hotspotId && !r.withItem && flagsMatch(r, state),
+  );
   if (!match) return null;
   return toResolved(match);
 }
@@ -53,6 +66,12 @@ export function hotspotsForItem(item: ItemId): string[] {
   return RULES.filter((r) => r.withItem === item).map((r) => r.hotspot);
 }
 
+function flagsMatch(r: InteractionRule, state: GameState): boolean {
+  if (r.requireFlag && !state.hasFlag(r.requireFlag)) return false;
+  if (r.requireNotFlag && state.hasFlag(r.requireNotFlag)) return false;
+  return true;
+}
+
 function toResolved(r: InteractionRule): ResolvedInteraction {
   return {
     lineId: r.line,
@@ -61,5 +80,8 @@ function toResolved(r: InteractionRule): ResolvedInteraction {
     removeItem: r.removeItem,
     removeHotspot: r.removeHotspot,
     showWorldSprite: r.showWorldSprite,
+    swapWorldSprite: r.swapWorldSprite,
+    playAnim: r.playAnim,
+    postWalk: r.postWalk,
   };
 }

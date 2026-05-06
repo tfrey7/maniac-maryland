@@ -3,6 +3,7 @@ import { ItemId } from "../systems/GameState";
 
 const ITEM_LABELS: Record<ItemId, string> = {
   duffel_bag: "duffel bag",
+  tape_measure: "tape measure",
 };
 
 const ICON_SIZE = 44;
