@@ -1,4 +1,11 @@
 {
-  "interactions": [],
+  "interactions": [
+    {
+      "hotspot": "counter_dropzone",
+      "withItem": "duffel_bag",
+      "removeItem": "duffel_bag",
+      "showWorldSprite": true
+    }
+  ],
   "solveCondition": []
 }

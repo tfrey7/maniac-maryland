@@ -7,6 +7,7 @@ export interface HotspotDef {
   polygon: number[][];
   approach: Point;
   pickup?: boolean;
+  worldSprite?: { texture: string; x: number; y: number; scale?: number; hidden?: boolean };
 }
 
 export interface Hotspot {
@@ -17,6 +18,7 @@ export interface Hotspot {
   visible: boolean;
   marker: Phaser.GameObjects.Rectangle;
   outline: Phaser.GameObjects.Polygon;
+  worldSprite?: Phaser.GameObjects.Image;
 }
 
 export class HotspotManager {
@@ -40,6 +42,14 @@ export class HotspotManager {
       outline.setOrigin(0, 0);
       outline.setStrokeStyle(2, 0xffaa00, 0.6);
       outline.setVisible(false);
+      let worldSprite: Phaser.GameObjects.Image | undefined;
+      if (def.worldSprite) {
+        worldSprite = scene.add
+          .image(def.worldSprite.x, def.worldSprite.y, def.worldSprite.texture)
+          .setScale(def.worldSprite.scale ?? 1)
+          .setDepth(def.worldSprite.y)
+          .setVisible(!def.worldSprite.hidden);
+      }
       this.hotspots.push({
         id: def.id,
         label: def.label,
@@ -48,6 +58,7 @@ export class HotspotManager {
         visible: true,
         marker,
         outline,
+        worldSprite,
       });
     }
   }
@@ -80,12 +91,18 @@ export class HotspotManager {
     return hit;
   }
 
+  showWorldSprite(id: string): void {
+    const h = this.hotspots.find((x) => x.id === id);
+    h?.worldSprite?.setVisible(true);
+  }
+
   hide(id: string): void {
     const h = this.hotspots.find((x) => x.id === id);
     if (!h) return;
     h.visible = false;
     h.outline.setVisible(false);
     h.marker.setVisible(false);
+    h.worldSprite?.setVisible(false);
   }
 
   centroidOf(id: string): Point | null {

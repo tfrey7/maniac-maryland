@@ -34,6 +34,7 @@ voice_for() {
     mcnulty)  echo "Daniel|0.92" ;;
     bunk)     echo "Fred|0.78" ;;
     handyman) echo "Ralph|0.85" ;;
+    omar)     echo "Reed (English (US))|0.80" ;;
     *)        echo "Daniel|0.90" ;;
   esac
 }

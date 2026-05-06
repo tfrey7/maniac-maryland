@@ -1,6 +1,6 @@
 export type Flag = "solved";
 
-export type ItemId = never;
+export type ItemId = "duffel_bag";
 
 export class GameState {
   private flags = new Set<Flag>();
@@ -17,6 +17,11 @@ export class GameState {
 
   addItem(item: ItemId): void {
     this.inventory.add(item);
+  }
+
+  removeItem(item: ItemId): void {
+    this.inventory.delete(item);
+    if (this.activeItem === item) this.activeItem = null;
   }
 
   hasItem(item: ItemId): boolean {

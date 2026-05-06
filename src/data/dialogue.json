@@ -1,4 +1,5 @@
 {
+  "omar_comin": { "speaker": "omar", "text": "Omar comin'!" },
   "intro": { "speaker": "mcnulty", "text": "Motherfucker." },
   "cutscene": [
     { "speaker": "mcnulty", "text": "Fuck." },

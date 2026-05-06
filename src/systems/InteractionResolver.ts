@@ -4,17 +4,21 @@ import interactionsData from "../data/interactions.json";
 export interface InteractionRule {
   hotspot: string;
   withItem?: ItemId;
-  line: string;
+  line?: string;
   setFlag?: Flag;
   giveItem?: ItemId;
+  removeItem?: ItemId;
   removeHotspot?: boolean;
+  showWorldSprite?: boolean;
 }
 
 export interface ResolvedInteraction {
-  lineId: string;
+  lineId?: string;
   setFlag?: Flag;
   giveItem?: ItemId;
+  removeItem?: ItemId;
   removeHotspot?: boolean;
+  showWorldSprite?: boolean;
 }
 
 const RULES = interactionsData.interactions as InteractionRule[];
@@ -54,6 +58,8 @@ function toResolved(r: InteractionRule): ResolvedInteraction {
     lineId: r.line,
     setFlag: r.setFlag,
     giveItem: r.giveItem,
+    removeItem: r.removeItem,
     removeHotspot: r.removeHotspot,
+    showWorldSprite: r.showWorldSprite,
   };
 }

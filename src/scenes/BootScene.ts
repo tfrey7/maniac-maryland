@@ -5,6 +5,13 @@ import bunkWalkUrl from "../../assets/characters/bunk-walk-sheet.png";
 import bunkIdleUrl from "../../assets/characters/bunk-idle-sheet.png";
 import handymanIdleUrl from "../../assets/characters/handyman-idle-sheet.png";
 import kitchenBgUrl from "../../assets/backgrounds/kitchen.png";
+import titleSkyUrl from "../../assets/backgrounds/title-sky.png";
+import titleSkylineUrl from "../../assets/backgrounds/title-skyline.png";
+import titleBuildingsUrl from "../../assets/backgrounds/title-buildings.png";
+import titleRoadUrl from "../../assets/backgrounds/title-road.png";
+import titleLogoUrl from "../../assets/ui/title-logo.png";
+import duffelBagIconUrl from "../../assets/items/duffel_bag.png";
+import duffelBagWorldUrl from "../../assets/items/duffel_bag-world.png";
 import atariPngUrl from "../../assets/fonts/atari-classic.png";
 import atariXmlUrl from "../../assets/fonts/atari-classic.xml?url";
 import themeUrl from "../../assets/audio/background_music.mp3";
@@ -28,6 +35,13 @@ export class BootScene extends Phaser.Scene {
     this.load.spritesheet("bunk_idle", bunkIdleUrl, { frameWidth: 256, frameHeight: 256 });
     this.load.spritesheet("handyman_idle", handymanIdleUrl, { frameWidth: 256, frameHeight: 256 });
     this.load.image("kitchen_bg", kitchenBgUrl);
+    this.load.image("title_sky", titleSkyUrl);
+    this.load.image("title_skyline", titleSkylineUrl);
+    this.load.image("title_buildings", titleBuildingsUrl);
+    this.load.image("title_road", titleRoadUrl);
+    this.load.image("title_logo", titleLogoUrl);
+    this.load.image("item:duffel_bag", duffelBagIconUrl);
+    this.load.image("item:duffel_bag_world", duffelBagWorldUrl);
     this.load.bitmapFont("pixel", atariPngUrl, atariXmlUrl);
     this.load.audio("theme", themeUrl);
 

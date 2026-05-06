@@ -1,17 +1,26 @@
 import Phaser from "phaser";
 import { ItemId } from "../systems/GameState";
 
-const ITEM_LABELS: Record<ItemId, string> = {};
+const ITEM_LABELS: Record<ItemId, string> = {
+  duffel_bag: "duffel bag",
+};
 
-const ITEM_COLORS: Record<ItemId, number> = {};
-
+const ICON_SIZE = 44;
 const SLOT_SIZE = 56;
 const SLOT_GAP = 8;
 const BAR_HEIGHT = 80;
 
+interface Slot {
+  item: ItemId;
+  hit: Phaser.GameObjects.Rectangle;
+  border: Phaser.GameObjects.Rectangle;
+  icon: Phaser.GameObjects.Image;
+  label: Phaser.GameObjects.Text;
+}
+
 export class InventoryBar {
   private bg: Phaser.GameObjects.Rectangle;
-  private slots: Phaser.GameObjects.Container[] = [];
+  private slots: Slot[] = [];
   private onSelect: (item: ItemId) => void;
   private selected: ItemId | null = null;
 
@@ -30,33 +39,40 @@ export class InventoryBar {
   }
 
   setItems(items: ItemId[]): void {
-    for (const slot of this.slots) slot.destroy();
+    for (const slot of this.slots) {
+      slot.hit.destroy();
+      slot.border.destroy();
+      slot.icon.destroy();
+      slot.label.destroy();
+    }
     this.slots = [];
+    const scene = this.bg.scene;
+    const barY = this.bg.y as number;
     items.forEach((item, i) => {
-      const x = 16 + i * (SLOT_SIZE + SLOT_GAP) + SLOT_SIZE / 2;
-      const y = (this.bg.y as number) + BAR_HEIGHT / 2;
-      const scene = this.bg.scene;
-      const bg = scene.add
-        .rectangle(0, 0, SLOT_SIZE, SLOT_SIZE, 0x222222)
-        .setStrokeStyle(2, 0x666666);
-      const icon = scene.add.rectangle(0, 0, 36, 36, ITEM_COLORS[item]);
+      const cx = 16 + i * (SLOT_SIZE + SLOT_GAP) + SLOT_SIZE / 2;
+      const cy = barY + BAR_HEIGHT / 2 - 6;
+      const hit = scene.add
+        .rectangle(cx, barY + BAR_HEIGHT / 2, SLOT_SIZE, BAR_HEIGHT, 0x000000, 0.001)
+        .setDepth(901)
+        .setInteractive({ useHandCursor: true });
+      const border = scene.add
+        .rectangle(cx, cy, SLOT_SIZE, SLOT_SIZE, 0x222222)
+        .setStrokeStyle(2, 0x666666)
+        .setDepth(901);
+      const icon = scene.add
+        .image(cx, cy, `item:${item}`)
+        .setDisplaySize(ICON_SIZE, ICON_SIZE)
+        .setDepth(902);
       const label = scene.add
-        .text(0, SLOT_SIZE / 2 + 6, ITEM_LABELS[item], {
+        .text(cx, cy + SLOT_SIZE / 2 + 4, ITEM_LABELS[item], {
           fontFamily: "monospace",
           fontSize: "10px",
           color: "#ccc",
         })
-        .setOrigin(0.5, 0);
-      const slot = scene.add.container(x, y, [bg, icon, label]).setDepth(901);
-      slot.setSize(SLOT_SIZE, SLOT_SIZE);
-      slot.setInteractive(
-        new Phaser.Geom.Rectangle(-SLOT_SIZE / 2, -SLOT_SIZE / 2, SLOT_SIZE, SLOT_SIZE),
-        Phaser.Geom.Rectangle.Contains,
-      );
-      slot.on("pointerdown", () => this.onSelect(item));
-      slot.setData("item", item);
-      slot.setData("bg", bg);
-      this.slots.push(slot);
+        .setOrigin(0.5, 0)
+        .setDepth(902);
+      hit.on("pointerdown", () => this.onSelect(item));
+      this.slots.push({ item, hit, border, icon, label });
     });
     this.refreshHighlight();
   }
@@ -68,9 +84,7 @@ export class InventoryBar {
 
   private refreshHighlight(): void {
     for (const slot of this.slots) {
-      const item = slot.getData("item") as ItemId;
-      const bg = slot.getData("bg") as Phaser.GameObjects.Rectangle;
-      bg.setStrokeStyle(2, item === this.selected ? 0xffeb6b : 0x666666);
+      slot.border.setStrokeStyle(2, slot.item === this.selected ? 0xffeb6b : 0x666666);
     }
   }
 }

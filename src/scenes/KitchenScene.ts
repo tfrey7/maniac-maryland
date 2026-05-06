@@ -35,7 +35,9 @@ export class KitchenScene extends Phaser.Scene {
     this.add.image(0, 0, "kitchen_bg").setOrigin(0, 0);
     this.walkable = arrayToPoints(sceneData.walkable);
     this.drawWalkableHint();
-    this.sound.play("theme", { loop: true, volume: 0.35 });
+    if (!this.sound.get("theme")?.isPlaying) {
+      this.sound.play("theme", { loop: true, volume: 0.35 });
+    }
 
     this.state = new GameState();
 
@@ -68,6 +70,8 @@ export class KitchenScene extends Phaser.Scene {
     this.cursor = new Cursor(this);
     this.inventoryBar = new InventoryBar(this, (item) => this.onInventoryClick(item));
     this.ghosts = new GhostLayer(this, this.hotspots);
+
+    this.giveItem("duffel_bag");
 
     this.input.mouse?.disableContextMenu();
     this.input.on("pointermove", (p: Phaser.Input.Pointer) => this.onPointerMove(p));
@@ -159,12 +163,19 @@ export class KitchenScene extends Phaser.Scene {
       return;
     }
 
-    this.dialogue.speakLine(result.lineId, () => {
+    const applyEffects = (): void => {
       if (result.setFlag) this.state.setFlag(result.setFlag);
       if (result.giveItem) this.giveItem(result.giveItem);
+      if (result.removeItem) this.removeItem(result.removeItem);
+      if (result.showWorldSprite) this.hotspots.showWorldSprite(hot.id);
       if (result.removeHotspot) this.hotspots.hide(hot.id);
       this.clearActiveItem();
-    });
+    };
+    if (result.lineId) {
+      this.dialogue.speakLine(result.lineId, applyEffects);
+    } else {
+      applyEffects();
+    }
   }
 
   private onInventoryClick(item: ItemId): void {
@@ -179,6 +190,11 @@ export class KitchenScene extends Phaser.Scene {
 
   private giveItem(item: ItemId): void {
     this.state.addItem(item);
+    this.inventoryBar.setItems(this.state.items());
+  }
+
+  private removeItem(item: ItemId): void {
+    this.state.removeItem(item);
     this.inventoryBar.setItems(this.state.items());
   }
 

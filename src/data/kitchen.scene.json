@@ -18,5 +18,13 @@
     "mcnulty": [{ "x": 1080, "y": 640 }, { "x": 640, "y": 640 }],
     "bunk":    [{ "x": 1140, "y": 640 }, { "x": 720, "y": 640 }]
   },
-  "hotspots": []
+  "hotspots": [
+    {
+      "id": "counter_dropzone",
+      "label": "counter",
+      "polygon": [[340, 250], [560, 250], [560, 330], [340, 330]],
+      "approach": { "x": 450, "y": 555 },
+      "worldSprite": { "texture": "item:duffel_bag_world", "x": 450, "y": 290, "scale": 1.0, "hidden": true }
+    }
+  ]
 }
