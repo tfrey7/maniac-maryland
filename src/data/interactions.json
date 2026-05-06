@@ -1,0 +1,22 @@
+{
+  "interactions": [
+    { "verb": "look", "hotspot": "window",       "line": "lookWindow" },
+    { "verb": "look", "hotspot": "fridge",       "line": "lookFridge" },
+    { "verb": "look", "hotspot": "counter",      "line": "lookCounter" },
+    { "verb": "look", "hotspot": "photos",       "line": "lookPhotos" },
+    { "verb": "look", "hotspot": "tape_measure", "line": "lookTapeMeasure" },
+    { "verb": "look", "hotspot": "handyman",     "line": "lookHandyman" },
+
+    { "verb": "use",  "hotspot": "window",       "line": "useWindow",  "setFlag": "examined_window" },
+    { "verb": "use",  "hotspot": "fridge",       "line": "useFridge",  "setFlag": "examined_fridge" },
+    { "verb": "use",  "hotspot": "counter",      "line": "lookCounter" },
+    { "verb": "use",  "hotspot": "photos",       "line": "lookPhotos" },
+    { "verb": "use",  "hotspot": "handyman",     "line": "talkHandyman" },
+    { "verb": "use",  "hotspot": "tape_measure", "line": "pickupTapeMeasure", "giveItem": "tape_measure", "removeHotspot": true },
+
+    { "verb": "use",  "hotspot": "window", "withItem": "tape_measure", "line": "measureWindow", "setFlag": "measured_window" },
+    { "verb": "use",  "hotspot": "fridge", "withItem": "tape_measure", "line": "measureFridge", "setFlag": "measured_fridge" }
+  ],
+  "fallbackUseWithItem": "useTapeMeasureFail",
+  "solveCondition": ["measured_window", "measured_fridge"]
+}

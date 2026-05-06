@@ -1,5 +1,6 @@
 /tmp
 /out-tsc
+/dist
 
 /node_modules
 npm-debug.log*
@@ -9,4 +10,9 @@ yarn-error.log*
 .pnp.js
 
 .vscode/*
+.idea/
+.claude/
 .DS_Store
+
+# High-res originals from gen-image.sh; only commit downscaled outputs
+*@source.png

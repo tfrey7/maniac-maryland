@@ -1,0 +1,55 @@
+{
+  "id": "kitchen",
+  "size": { "width": 1280, "height": 720 },
+  "background": "kitchen_placeholder",
+  "walkable": [
+    [120, 480],
+    [1160, 480],
+    [1160, 700],
+    [120, 700]
+  ],
+  "spawn": {
+    "mcnulty": { "x": 220, "y": 620 },
+    "bunk":    { "x": 160, "y": 640 },
+    "handyman":{ "x": 1080, "y": 600 }
+  },
+  "hotspots": [
+    {
+      "id": "window",
+      "label": "Window",
+      "polygon": [[820, 80], [1140, 80], [1140, 320], [820, 320]],
+      "approach": { "x": 980, "y": 500 }
+    },
+    {
+      "id": "fridge",
+      "label": "Fridge",
+      "polygon": [[120, 220], [320, 220], [320, 540], [120, 540]],
+      "approach": { "x": 280, "y": 560 }
+    },
+    {
+      "id": "counter",
+      "label": "Counter",
+      "polygon": [[400, 360], [780, 360], [780, 480], [400, 480]],
+      "approach": { "x": 590, "y": 520 }
+    },
+    {
+      "id": "photos",
+      "label": "Crime-scene photos",
+      "polygon": [[420, 100], [720, 100], [720, 280], [420, 280]],
+      "approach": { "x": 560, "y": 500 }
+    },
+    {
+      "id": "tape_measure",
+      "label": "Tape measure",
+      "polygon": [[640, 600], [720, 600], [720, 660], [640, 660]],
+      "approach": { "x": 680, "y": 640 },
+      "pickup": true
+    },
+    {
+      "id": "handyman",
+      "label": "Handyman",
+      "polygon": [[1040, 460], [1140, 460], [1140, 700], [1040, 700]],
+      "approach": { "x": 1000, "y": 620 }
+    }
+  ]
+}
