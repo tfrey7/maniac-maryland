@@ -4,7 +4,7 @@ import { GameState, ItemId } from "../systems/GameState";
 import { DialogueManager } from "../systems/DialogueManager";
 import { HotspotManager, HotspotDef, Hotspot } from "../systems/HotspotManager";
 import { resolve, SOLVE_CONDITION, Verb } from "../systems/InteractionResolver";
-import { Polygon, arrayToPoints, clampToPolygon } from "../systems/Polygon";
+import { Polygon, Point, arrayToPoints, clampToPolygon } from "../systems/Polygon";
 import { Cursor } from "../ui/Cursor";
 import { InventoryBar } from "../ui/InventoryBar";
 import sceneData from "../data/kitchen.scene.json";
@@ -23,6 +23,7 @@ export class KitchenScene extends Phaser.Scene {
   private walkable!: Polygon;
   private bunkRetargetTimer = 0;
   private solved = false;
+  private intro = true;
 
   constructor() {
     super({ key: "KitchenScene" });
@@ -77,6 +78,29 @@ export class KitchenScene extends Phaser.Scene {
         padding: { x: 6, y: 3 },
       })
       .setDepth(2000);
+
+    this.playIntro();
+  }
+
+  private playIntro(): void {
+    const path = sceneData.intro;
+    this.walkPath(this.bunk, path.bunk);
+    this.walkPath(this.mcnulty, path.mcnulty, () => {
+      this.dialogue.speakLine(path.lineId, () => {
+        this.intro = false;
+      });
+    });
+  }
+
+  private walkPath(character: Character, waypoints: Point[], onComplete?: () => void): void {
+    const step = (i: number): void => {
+      if (i >= waypoints.length) {
+        onComplete?.();
+        return;
+      }
+      character.walkTo(waypoints[i], () => step(i + 1));
+    };
+    step(0);
   }
 
   update(time: number, deltaMs: number): void {
@@ -111,7 +135,7 @@ export class KitchenScene extends Phaser.Scene {
   }
 
   private onPointerDown(p: Phaser.Input.Pointer): void {
-    if (this.solved) return;
+    if (this.solved || this.intro) return;
     if (p.y > this.scale.height - 80) return;
     const point = { x: p.worldX, y: p.worldY };
     const hit = this.hotspots.hitTest(point);
@@ -166,6 +190,7 @@ export class KitchenScene extends Phaser.Scene {
   }
 
   private updateBunkFollow(deltaMs: number): void {
+    if (this.intro) return;
     this.bunkRetargetTimer -= deltaMs;
     if (this.bunkRetargetTimer > 0) return;
     this.bunkRetargetTimer = 1500;
