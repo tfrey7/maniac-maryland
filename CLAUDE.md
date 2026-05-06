@@ -44,7 +44,8 @@ Data flow: `KitchenScene` reads JSON at import time → `HotspotManager` builds 
 
 ## Scope guardrails (POC — do not expand without being asked)
 
-- One scene, one puzzle. Don't add scene transitions, save/load, menus, settings, audio, or a second room.
+- One scene, one puzzle. Don't add scene transitions, save/load, menus, settings, or a second room.
+- Background music lives in `assets/audio/` and is loaded in `BootScene`, played on loop in `KitchenScene`. Don't add SFX, audio mixing, or a sound settings UI without being asked.
 - Two verbs (`look`, `use`). Don't add a SCUMM verb grid, talk trees, or combine-items-on-items.
 - Placeholder rectangles for characters and a generated background are intentional. Real art is produced via the `generate-character` skill into `assets/characters/` and `scripts/gen-image.sh` (uses `OPENAI_API_KEY`); don't swap in a different art pipeline.
 - Don't introduce frameworks: no state library, no ECS, no scene graph abstraction, no router. Systems are deliberately small classes.

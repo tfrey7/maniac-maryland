@@ -29,29 +29,27 @@ export class KitchenScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.add.image(0, 0, "kitchen_placeholder").setOrigin(0, 0);
+    this.add.image(0, 0, "kitchen_bg").setOrigin(0, 0);
     this.walkable = arrayToPoints(sceneData.walkable);
     this.drawWalkableHint();
+    this.sound.play("theme", { loop: true, volume: 0.35 });
 
     this.state = new GameState();
 
     this.mcnulty = new Character(this, sceneData.spawn.mcnulty.x, sceneData.spawn.mcnulty.y, {
       id: "mcnulty",
-      label: "McNulty",
       texture: "mcnulty_sprite",
       scale: 0.9,
       speed: 220,
     });
     this.bunk = new Character(this, sceneData.spawn.bunk.x, sceneData.spawn.bunk.y, {
       id: "bunk",
-      label: "Bunk",
       texture: "bunk_sprite",
       scale: 0.9,
       speed: 200,
     });
     this.handyman = new Character(this, sceneData.spawn.handyman.x, sceneData.spawn.handyman.y, {
       id: "handyman",
-      label: "Handyman",
       texture: "handyman_sprite",
       scale: 0.9,
       speed: 0,

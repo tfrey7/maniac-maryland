@@ -5,7 +5,6 @@ export type CharacterId = "mcnulty" | "bunk" | "handyman";
 
 export interface CharacterConfig {
   id: CharacterId;
-  label: string;
   speed: number;
   texture?: string;
   scale?: number;
@@ -16,17 +15,13 @@ type CharacterSprite = Phaser.GameObjects.Image | Phaser.GameObjects.Rectangle;
 
 export class Character {
   readonly id: CharacterId;
-  readonly label: string;
   readonly sprite: CharacterSprite;
-  readonly nameTag: Phaser.GameObjects.Text;
-  private readonly tagOffset: number;
   private speed: number;
   private target: Point | null = null;
   private onArrive: (() => void) | null = null;
 
   constructor(scene: Phaser.Scene, x: number, y: number, cfg: CharacterConfig) {
     this.id = cfg.id;
-    this.label = cfg.label;
     this.speed = cfg.speed;
     if (cfg.texture) {
       const img = scene.add.image(x, y, cfg.texture).setOrigin(0.5, 1);
@@ -39,16 +34,6 @@ export class Character {
         .setOrigin(0.5, 1)
         .setStrokeStyle(2, 0x000000);
     }
-    this.tagOffset = this.sprite.displayHeight + 8;
-    this.nameTag = scene.add
-      .text(x, y - this.tagOffset, cfg.label, {
-        fontFamily: "monospace",
-        fontSize: "14px",
-        color: "#fff",
-        backgroundColor: "#000",
-        padding: { x: 4, y: 2 },
-      })
-      .setOrigin(0.5, 1);
   }
 
   get x(): number {
@@ -78,10 +63,7 @@ export class Character {
   }
 
   update(_time: number, deltaMs: number): void {
-    if (!this.target) {
-      this.nameTag.setPosition(this.sprite.x, this.sprite.y - this.tagOffset);
-      return;
-    }
+    if (!this.target) return;
     const dx = this.target.x - this.sprite.x;
     const dy = this.target.y - this.sprite.y;
     const dist = Math.hypot(dx, dy);
@@ -98,6 +80,5 @@ export class Character {
         this.sprite.y + (dy / dist) * step,
       );
     }
-    this.nameTag.setPosition(this.sprite.x, this.sprite.y - 88);
   }
 }

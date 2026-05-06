@@ -1,7 +1,7 @@
 {
   "id": "kitchen",
   "size": { "width": 1280, "height": 720 },
-  "background": "kitchen_placeholder",
+  "background": "kitchen_bg",
   "walkable": [
     [120, 480],
     [1160, 480],
