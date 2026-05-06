@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import mcnultyUrl from "../../assets/characters/mcnulty.png";
+import mcnultyWalkUrl from "../../assets/characters/mcnulty-walk-sheet.png";
 import bunkUrl from "../../assets/characters/bunk.png";
 import handymanUrl from "../../assets/characters/handyman.png";
 import kitchenBgUrl from "../../assets/backgrounds/kitchen.png";
@@ -13,7 +13,7 @@ export class BootScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image("mcnulty_sprite", mcnultyUrl);
+    this.load.spritesheet("mcnulty_walk", mcnultyWalkUrl, { frameWidth: 256, frameHeight: 256 });
     this.load.image("bunk_sprite", bunkUrl);
     this.load.image("handyman_sprite", handymanUrl);
     this.load.image("kitchen_bg", kitchenBgUrl);
@@ -22,6 +22,12 @@ export class BootScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.anims.create({
+      key: "mcnulty-walk",
+      frames: this.anims.generateFrameNumbers("mcnulty_walk", { start: 0, end: 3 }),
+      frameRate: 8,
+      repeat: -1,
+    });
     this.scene.start("TitleScene");
   }
 }

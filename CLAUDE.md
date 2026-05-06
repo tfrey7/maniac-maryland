@@ -47,7 +47,7 @@ Data flow: `KitchenScene` reads JSON at import time → `HotspotManager` builds 
 - One scene, one puzzle. Don't add scene transitions, save/load, menus, settings, or a second room.
 - Background music lives in `assets/audio/` and is loaded in `BootScene`, played on loop in `KitchenScene`. Don't add SFX, audio mixing, or a sound settings UI without being asked.
 - Two verbs (`look`, `use`). Don't add a SCUMM verb grid, talk trees, or combine-items-on-items.
-- Placeholder rectangles for characters and a generated background are intentional. Real art is produced via the `generate-character` skill into `assets/characters/` and `scripts/gen-image.sh` (uses `OPENAI_API_KEY`); don't swap in a different art pipeline.
+- Placeholder rectangles for characters and a generated background are intentional. Real art is produced via the `pixel-artist` agent (`.claude/agents/pixel-artist.md`), which uses a two-stage pipeline: `scripts/gen-image.sh` for OpenAI source images and backgrounds (needs `OPENAI_API_KEY`), then the AutoSprite MCP server in `.mcp.json` for character animation frames (needs `AUTOSPRITE_API_KEY`). Final assets land in `assets/characters/` and `assets/backgrounds/`. Don't swap in a different art pipeline.
 - Don't introduce frameworks: no state library, no ECS, no scene graph abstraction, no router. Systems are deliberately small classes.
 - Don't add backwards-compat shims, feature flags, or "future hooks." If something needs to change, change it.
 

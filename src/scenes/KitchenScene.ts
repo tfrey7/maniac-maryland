@@ -38,8 +38,9 @@ export class KitchenScene extends Phaser.Scene {
 
     this.mcnulty = new Character(this, sceneData.spawn.mcnulty.x, sceneData.spawn.mcnulty.y, {
       id: "mcnulty",
-      texture: "mcnulty_sprite",
-      scale: 0.9,
+      texture: "mcnulty_walk",
+      walkAnimKey: "mcnulty-walk",
+      scale: 0.7,
       speed: 220,
     });
     this.bunk = new Character(this, sceneData.spawn.bunk.x, sceneData.spawn.bunk.y, {
