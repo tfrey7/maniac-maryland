@@ -87,4 +87,10 @@ export class HotspotManager {
     h.outline.setVisible(false);
     h.marker.setVisible(false);
   }
+
+  centroidOf(id: string): Point | null {
+    const h = this.hotspots.find((x) => x.id === id);
+    if (!h || !h.visible) return null;
+    return { x: h.marker.x, y: h.marker.y };
+  }
 }

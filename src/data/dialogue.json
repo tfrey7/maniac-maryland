@@ -1,18 +1,5 @@
 {
   "intro": { "speaker": "mcnulty", "text": "Motherfucker." },
-  "lookWindow": { "speaker": "bunk", "text": "Fuck." },
-  "lookFridge": { "speaker": "mcnulty", "text": "Fuck me." },
-  "lookCounter": { "speaker": "bunk", "text": "Fuck." },
-  "lookPhotos": { "speaker": "mcnulty", "text": "Motherfucker." },
-  "lookTapeMeasure": { "speaker": "handyman", "text": "Tape measure." },
-  "lookHandyman": { "speaker": "mcnulty", "text": "Fucking maintenance." },
-  "talkHandyman": { "speaker": "handyman", "text": "You done in there?" },
-  "useWindow": { "speaker": "mcnulty", "text": "Walk it off, Jimmy." },
-  "useFridge": { "speaker": "bunk", "text": "Fuck." },
-  "pickupTapeMeasure": { "speaker": "mcnulty", "text": "Fuckin' A." },
-  "measureWindow": { "speaker": "bunk", "text": "Fuck." },
-  "measureFridge": { "speaker": "mcnulty", "text": "Fuck. Fuck." },
-  "useTapeMeasureFail": { "speaker": "mcnulty", "text": "Fuck no." },
   "cutscene": [
     { "speaker": "mcnulty", "text": "Fuck." },
     { "speaker": "bunk", "text": "Motherfucker." },

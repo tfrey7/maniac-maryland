@@ -1,13 +1,9 @@
 import Phaser from "phaser";
 import { ItemId } from "../systems/GameState";
 
-const ITEM_LABELS: Record<ItemId, string> = {
-  tape_measure: "Tape measure",
-};
+const ITEM_LABELS: Record<ItemId, string> = {};
 
-const ITEM_COLORS: Record<ItemId, number> = {
-  tape_measure: 0xffd24d,
-};
+const ITEM_COLORS: Record<ItemId, number> = {};
 
 const SLOT_SIZE = 56;
 const SLOT_GAP = 8;

@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "gen:speech": "bash scripts/gen-speech-sfx.sh",
+    "gen:speech:check": "bash scripts/gen-speech-sfx.sh --check"
   },
   "dependencies": {
     "phaser": "^3.80.1"

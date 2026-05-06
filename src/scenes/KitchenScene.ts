@@ -3,9 +3,10 @@ import { Character } from "../entities/Character";
 import { GameState, ItemId } from "../systems/GameState";
 import { DialogueManager } from "../systems/DialogueManager";
 import { HotspotManager, HotspotDef, Hotspot } from "../systems/HotspotManager";
-import { resolve, SOLVE_CONDITION, Verb } from "../systems/InteractionResolver";
+import { resolve, SOLVE_CONDITION } from "../systems/InteractionResolver";
 import { Polygon, Point, arrayToPoints, clampToPolygon } from "../systems/Polygon";
 import { Cursor } from "../ui/Cursor";
+import { GhostLayer } from "../ui/GhostLayer";
 import { InventoryBar } from "../ui/InventoryBar";
 import sceneData from "../data/kitchen.scene.json";
 
@@ -20,6 +21,7 @@ export class KitchenScene extends Phaser.Scene {
   private dialogue!: DialogueManager;
   private cursor!: Cursor;
   private inventoryBar!: InventoryBar;
+  private ghosts!: GhostLayer;
   private walkable!: Polygon;
   private bunkRetargetTimer = 0;
   private solved = false;
@@ -42,7 +44,7 @@ export class KitchenScene extends Phaser.Scene {
       texture: "mcnulty_walk",
       walkAnimKey: "mcnulty-walk",
       idleAnimKey: "mcnulty-idle",
-      scale: 0.7,
+      scale: 1.68,
       speed: 220,
     });
     this.bunk = new Character(this, sceneData.spawn.bunk.x, sceneData.spawn.bunk.y, {
@@ -50,13 +52,14 @@ export class KitchenScene extends Phaser.Scene {
       texture: "bunk_walk",
       walkAnimKey: "bunk-walk",
       idleAnimKey: "bunk-idle",
-      scale: 0.7,
+      scale: 1.68,
       speed: 200,
     });
     this.handyman = new Character(this, sceneData.spawn.handyman.x, sceneData.spawn.handyman.y, {
       id: "handyman",
-      texture: "handyman_sprite",
-      scale: 0.9,
+      texture: "handyman_idle",
+      idleAnimKey: "handyman-idle",
+      scale: 1.728,
       speed: 0,
     });
 
@@ -64,13 +67,14 @@ export class KitchenScene extends Phaser.Scene {
     this.dialogue = new DialogueManager(this, [this.mcnulty, this.bunk, this.handyman]);
     this.cursor = new Cursor(this);
     this.inventoryBar = new InventoryBar(this, (item) => this.onInventoryClick(item));
+    this.ghosts = new GhostLayer(this, this.hotspots);
 
     this.input.mouse?.disableContextMenu();
     this.input.on("pointermove", (p: Phaser.Input.Pointer) => this.onPointerMove(p));
     this.input.on("pointerdown", (p: Phaser.Input.Pointer) => this.onPointerDown(p));
 
     this.add
-      .text(16, 12, "Right-click: look · Left-click: walk/use · Click inventory item, then a hotspot, to use.", {
+      .text(16, 12, "Click anything to interact. Pick up items into your inventory, then click an item to ready it — glowing markers show where it goes.", {
         fontFamily: "monospace",
         fontSize: "12px",
         color: "#ddd",
@@ -125,13 +129,7 @@ export class KitchenScene extends Phaser.Scene {
 
   private onPointerMove(p: Phaser.Input.Pointer): void {
     const hit = this.hotspots.updateHover({ x: p.worldX, y: p.worldY });
-    if (this.state.activeItem) {
-      this.cursor.setVerb("useItem", hit ? hit.label : "");
-    } else if (hit) {
-      this.cursor.setVerb("look", hit.label);
-    } else {
-      this.cursor.setVerb("walk");
-    }
+    this.cursor.setLabel(hit ? hit.label : "");
   }
 
   private onPointerDown(p: Phaser.Input.Pointer): void {
@@ -139,24 +137,23 @@ export class KitchenScene extends Phaser.Scene {
     if (p.y > this.scale.height - 80) return;
     const point = { x: p.worldX, y: p.worldY };
     const hit = this.hotspots.hitTest(point);
-    const verb: Verb = p.rightButtonDown() && !this.state.activeItem ? "look" : "use";
 
     if (hit) {
-      this.handleHotspotClick(hit, verb);
-    } else if (verb === "use") {
+      this.handleHotspotClick(hit);
+    } else {
       const dest = clampToPolygon(point, this.walkable);
       this.mcnulty.walkTo(dest);
       this.clearActiveItem();
     }
   }
 
-  private handleHotspotClick(hot: Hotspot, verb: Verb): void {
+  private handleHotspotClick(hot: Hotspot): void {
     const dest = clampToPolygon(hot.approach, this.walkable);
-    this.mcnulty.walkTo(dest, () => this.runInteraction(hot, verb));
+    this.mcnulty.walkTo(dest, () => this.runInteraction(hot));
   }
 
-  private runInteraction(hot: Hotspot, verb: Verb): void {
-    const result = resolve(verb, hot.id, this.state);
+  private runInteraction(hot: Hotspot): void {
+    const result = resolve(hot.id, this.state);
     if (!result) {
       this.clearActiveItem();
       return;
@@ -177,6 +174,7 @@ export class KitchenScene extends Phaser.Scene {
     }
     this.state.activeItem = item;
     this.inventoryBar.setSelected(item);
+    this.ghosts.setActiveItem(item);
   }
 
   private giveItem(item: ItemId): void {
@@ -187,6 +185,7 @@ export class KitchenScene extends Phaser.Scene {
   private clearActiveItem(): void {
     this.state.activeItem = null;
     this.inventoryBar.setSelected(null);
+    this.ghosts.setActiveItem(null);
   }
 
   private updateBunkFollow(deltaMs: number): void {
@@ -210,6 +209,7 @@ export class KitchenScene extends Phaser.Scene {
 
   private checkSolved(): void {
     if (this.solved) return;
+    if (SOLVE_CONDITION.length === 0) return;
     if (!this.state.isSolved(SOLVE_CONDITION)) return;
     if (this.dialogue.isSpeaking()) return;
     this.solved = true;

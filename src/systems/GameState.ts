@@ -1,11 +1,6 @@
-export type Flag =
-  | "examined_window"
-  | "examined_fridge"
-  | "measured_window"
-  | "measured_fridge"
-  | "solved";
+export type Flag = "solved";
 
-export type ItemId = "tape_measure";
+export type ItemId = never;
 
 export class GameState {
   private flags = new Set<Flag>();

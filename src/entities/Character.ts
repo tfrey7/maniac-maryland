@@ -32,12 +32,12 @@ export class Character {
   constructor(scene: Phaser.Scene, x: number, y: number, cfg: CharacterConfig) {
     this.id = cfg.id;
     this.speed = cfg.speed;
-    if (cfg.texture && cfg.walkAnimKey) {
+    if (cfg.texture && (cfg.walkAnimKey || cfg.idleAnimKey)) {
       const spr = scene.add.sprite(x, y, cfg.texture, 0).setOrigin(0.5, 1);
       spr.setScale(cfg.scale ?? 1);
       spr.texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
       this.sprite = spr;
-      this.walkAnimKey = cfg.walkAnimKey;
+      this.walkAnimKey = cfg.walkAnimKey ?? null;
       this.idleAnimKey = cfg.idleAnimKey ?? null;
       if (this.idleAnimKey) this.enterIdle();
     } else if (cfg.texture) {

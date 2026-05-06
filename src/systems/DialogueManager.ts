@@ -9,6 +9,7 @@ interface DialogueLine {
 }
 
 interface QueuedLine extends DialogueLine {
+  audioKey: string;
   onDone?: () => void;
 }
 
@@ -41,10 +42,14 @@ export class DialogueManager {
       const lines = [...data];
       const last = lines.length - 1;
       lines.forEach((l, i) =>
-        this.enqueue({ ...l, onDone: i === last ? onDone : undefined }),
+        this.enqueue({
+          ...l,
+          audioKey: `speech:${lineId}-${i}`,
+          onDone: i === last ? onDone : undefined,
+        }),
       );
     } else {
-      this.enqueue({ ...data, onDone });
+      this.enqueue({ ...data, audioKey: `speech:${lineId}`, onDone });
     }
   }
 
@@ -93,6 +98,9 @@ export class DialogueManager {
       return;
     }
     this.bubble.show(speaker, next.text);
+    if (this.scene.cache.audio.exists(next.audioKey)) {
+      this.scene.sound.play(next.audioKey, { volume: 0.6 });
+    }
     const duration = Math.max(LINE_DURATION_MS, next.text.length * 70);
     this.timer = this.scene.time.delayedCall(duration, () => {
       const prev = this.current;

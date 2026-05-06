@@ -41,6 +41,15 @@ Data flow: `KitchenScene` reads JSON at import time → `HotspotManager` builds 
 - **New hotspot**: add to `kitchen.scene.json` (`polygon`, `approach`), then add `look`/`use` rules to `interactions.json`, then add lines to `dialogue.json`.
 - **New flag or item**: extend the `Flag` / `ItemId` union in `GameState.ts`. JSON references are validated by the cast in `InteractionResolver.ts` — a typo will fail at runtime, not compile time.
 - **New solve condition**: edit `solveCondition` in `interactions.json`.
+- **New or edited dialogue line**: after editing `dialogue.json`, run `npm run gen:speech` to regenerate the matching mumble-TTS stem. Commit the new audio alongside the JSON change.
+
+## Speech audio sync
+
+Each `lineId` in `dialogue.json` has a generated mumble-TTS file at `assets/audio/speech/<lineId>.<sha8>.ogg`, where `<sha8>` is the first 8 hex chars of `sha256(speaker + ":" + text)`. Editing a line's text or speaker invalidates the hash, so the old file becomes orphan and a new one is generated — `git diff` shows one delete + one add per edited line, which is the intended drift signal.
+
+- `npm run gen:speech` — idempotent: skips up-to-date stems, prunes orphans, generates missing ones. Uses macOS `say` (different voice per character) → `ffmpeg` heavy lowpass + bitcrush so lines are unintelligible mumble in the cadence of the original.
+- `npm run gen:speech -- --check` — exits nonzero if any line is missing or stale. Use as a precommit/CI gate.
+- `DialogueManager.speakLine` plays `<lineId>.<sha8>.ogg` if loaded, silent fallback otherwise. Don't hand-edit the audio files — the script is the source of truth.
 
 ## Scope guardrails (POC — do not expand without being asked)
 
