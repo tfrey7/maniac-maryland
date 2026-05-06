@@ -8,6 +8,7 @@ export interface CharacterConfig {
   speed: number;
   texture?: string;
   walkAnimKey?: string;
+  idleAnimKey?: string;
   scale?: number;
   color?: number;
 }
@@ -24,6 +25,9 @@ export class Character {
   private target: Point | null = null;
   private onArrive: (() => void) | null = null;
   private walkAnimKey: string | null = null;
+  private idleAnimKey: string | null = null;
+  private idleTimer: Phaser.Time.TimerEvent | null = null;
+  private idlePhaseMs = Math.floor(Math.random() * 1500);
 
   constructor(scene: Phaser.Scene, x: number, y: number, cfg: CharacterConfig) {
     this.id = cfg.id;
@@ -34,6 +38,8 @@ export class Character {
       spr.texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
       this.sprite = spr;
       this.walkAnimKey = cfg.walkAnimKey;
+      this.idleAnimKey = cfg.idleAnimKey ?? null;
+      if (this.idleAnimKey) this.enterIdle();
     } else if (cfg.texture) {
       const img = scene.add.image(x, y, cfg.texture).setOrigin(0.5, 1);
       img.setScale(cfg.scale ?? 1);
@@ -62,6 +68,7 @@ export class Character {
   walkTo(target: Point, onArrive?: () => void): void {
     this.target = target;
     this.onArrive = onArrive ?? null;
+    this.cancelIdle();
     if (this.walkAnimKey && this.sprite instanceof Phaser.GameObjects.Sprite) {
       this.sprite.play(this.walkAnimKey, true);
     }
@@ -74,9 +81,46 @@ export class Character {
   }
 
   private stopWalkAnim(): void {
-    if (this.walkAnimKey && this.sprite instanceof Phaser.GameObjects.Sprite) {
+    if (!(this.sprite instanceof Phaser.GameObjects.Sprite)) return;
+    if (this.idleAnimKey) {
+      this.enterIdle();
+    } else if (this.walkAnimKey) {
       this.sprite.stop();
       this.sprite.setFrame(0);
+    }
+  }
+
+  private enterIdle(): void {
+    if (!(this.sprite instanceof Phaser.GameObjects.Sprite) || !this.idleAnimKey) return;
+    this.cancelIdle();
+    this.sprite.play(this.idleAnimKey);
+    this.sprite.anims.pause();
+    this.scheduleIdleTwitch();
+  }
+
+  private scheduleIdleTwitch(): void {
+    if (!(this.sprite instanceof Phaser.GameObjects.Sprite) || !this.idleAnimKey) return;
+    const sprite = this.sprite;
+    const idleKey = this.idleAnimKey;
+    const delayMs = 1500 + this.idlePhaseMs + Math.random() * 3000;
+    this.idleTimer = sprite.scene.time.delayedCall(delayMs, () => {
+      this.idleTimer = null;
+      if (this.target) return;
+      sprite.play({ key: idleKey, repeat: 0 });
+      sprite.once("animationcomplete-" + idleKey, () => {
+        if (this.target) return;
+        this.enterIdle();
+      });
+    });
+  }
+
+  private cancelIdle(): void {
+    if (this.idleTimer) {
+      this.idleTimer.remove(false);
+      this.idleTimer = null;
+    }
+    if (this.idleAnimKey && this.sprite instanceof Phaser.GameObjects.Sprite) {
+      this.sprite.off("animationcomplete-" + this.idleAnimKey);
     }
   }
 
